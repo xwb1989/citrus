@@ -1,12 +1,12 @@
 CC=g++
 CPPC=g++
 LD=g++
+LIB = -lurcu
 RM=rm
-CFLAGS=-Wall -c
+CFLAGS=-Wall -c -DEXTERNAL_RCU
 CPPFLAGS=$(CFLAGS)
 LDFLAGS= 
-CSRC=new_urcu.c \
-		citrus.c 
+CSRC=citrus.c 
 CPPSRC=helloworld.cpp
 PROG=hello
 OBJS= $(CSRC:.c=.o)  $(CPPSRC:.cpp=.o) 
@@ -16,7 +16,7 @@ all: $(PROG)
 
 
 $(PROG): $(OBJS)
-	$(LD) $(LDFLAGS) $^ -o $@ 
+	$(LD) $(LDFLAGS) $^ -o $@ $(LIB)
 
 %.o: %.c 
 	$(CC) $(CFLAGS) $< -o $@

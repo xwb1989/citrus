@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
-#include "citrus.h" 
 #include "urcu.h"
+#include "citrus.h" 
 
 /**
  * Copyright 2014 Maya Arbel (mayaarl [at] cs [dot] technion [dot] ac [dot] il).
