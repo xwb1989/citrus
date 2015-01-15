@@ -30,12 +30,12 @@ rcu_node** urcu_table;
 void initURCU(int num_threads){
    rcu_node** result = (rcu_node**) malloc(sizeof(rcu_node)*num_threads);
    int i;
-   rcu_node* new;
+   rcu_node* new_node;
    threads = num_threads; 
    for( i=0; i<threads ; i++){
-        new = (rcu_node*) malloc(sizeof(rcu_node));
-        new->time = 1; 
-        *(result + i) = new;
+        new_node = (rcu_node*) malloc(sizeof(rcu_node));
+        new_node->time = 1; 
+        *(result + i) = new_node;
     }
     urcu_table =  result;
     printf("initializing URCU finished, node_size: %zd\n", sizeof(rcu_node));

@@ -36,21 +36,21 @@ struct node_t {
 
 
 citrus_node newNode(int key){
-    citrus_node new = (citrus_node) malloc(sizeof(struct node_t));
-	if( new==NULL){
+    citrus_node new_node = (citrus_node) malloc(sizeof(struct node_t));
+	if( new_node==NULL){
 		printf("out of memory\n");
 		exit(1); 
 	}    
-	new->key=key;
-    new->marked= false;
-    new->child[0]=NULL;
-    new->child[1]=NULL;
-    new->tag[0]=0;
-    new->tag[1]=0;
-    if (pthread_mutex_init(&(new->lock), NULL) != 0){
+	new_node->key=key;
+    new_node->marked= false;
+    new_node->child[0]=NULL;
+    new_node->child[1]=NULL;
+    new_node->tag[0]=0;
+    new_node->tag[1]=0;
+    if (pthread_mutex_init(&(new_node->lock), NULL) != 0){
         printf("\n mutex init failed\n");
     }
-    return new;
+    return new_node;
 }
 
 citrus_node citrus_init(){
@@ -114,8 +114,8 @@ bool citrus_insert(citrus_node root, int key, int value){
         if (curr!=NULL) return false;
         pthread_mutex_lock(&(prev->lock));
         if( validate(prev,tag,curr,direction) ){
-            citrus_node new = newNode(key); 
-			prev->child[direction]=new;
+            citrus_node new_node = newNode(key); 
+			prev->child[direction]=new_node;
 
             pthread_mutex_unlock(&(prev->lock));
             return true;
@@ -194,20 +194,20 @@ bool citrus_delete(citrus_node root, int key){
         pthread_mutex_lock(&(succ->lock));
         if (validate(prevSucc,0,succ, succDirection) && validate(succ,succ->tag[0],NULL, 0)){
             curr->marked=true;
-            citrus_node new = newNode(succ->key);
-            new->child[0]=curr->child[0];
-            new->child[1]=curr->child[1];
-            pthread_mutex_lock(&(new->lock)); 
-            prev->child[direction]=new;  
+            citrus_node new_node = newNode(succ->key);
+            new_node->child[0]=curr->child[0];
+            new_node->child[1]=curr->child[1];
+            pthread_mutex_lock(&(new_node->lock)); 
+            prev->child[direction]=new_node;  
             urcu_synchronize();
             if(prev->child[direction] == NULL){
                 prev->tag[direction]++;
             }
             succ->marked=true;            
 			if (prevSucc == curr){
-                new->child[1]=succ->child[1];
-                if(new->child[1] == NULL){
-                    new->tag[1]++;
+                new_node->child[1]=succ->child[1];
+                if(new_node->child[1] == NULL){
+                    new_node->tag[1]++;
                 }
             }
             else{
@@ -217,7 +217,7 @@ bool citrus_delete(citrus_node root, int key){
                 }
             }
 			pthread_mutex_unlock(&(prev->lock));
-            pthread_mutex_unlock(&(new->lock));            
+            pthread_mutex_unlock(&(new_node->lock));            
 			pthread_mutex_unlock(&(curr->lock));  	
             if (prevSucc != curr)
                 pthread_mutex_unlock(&(prevSucc->lock));	
