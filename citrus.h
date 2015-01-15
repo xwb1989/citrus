@@ -26,11 +26,11 @@
 
 #define infinity 2147483647 
 
-typedef struct node_t* node;
+typedef struct node_t* citrus_node;
 
-node init();
-int contains(node root, int key);
-bool insert(node root, int key, int value);
-bool delete(node root, int key);
+citrus_node citrus_init();
+int citrus_contains(citrus_node root, int key);
+bool citrus_insert(citrus_node root, int key, int value);
+bool citrus_delete(citrus_node root, int key);
 
 #endif

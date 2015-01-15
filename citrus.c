@@ -35,8 +35,8 @@ struct node_t {
 };
 
 
-node newNode(int key){
-    node new = (node) malloc(sizeof(struct node_t));
+citrus_node newNode(int key){
+    citrus_node new = (citrus_node) malloc(sizeof(struct node_t));
 	if( new==NULL){
 		printf("out of memory\n");
 		exit(1); 
@@ -53,16 +53,16 @@ node newNode(int key){
     return new;
 }
 
-node init(){
-    node root = newNode(infinity);
+citrus_node citrus_init(){
+    citrus_node root = newNode(infinity);
 	root->child[0]=newNode(infinity);
     return root;
 }
 
 
-int contains(node root, int key ){
+int citrus_contains(citrus_node root, int key ){
 	urcu_read_lock();
-    node curr = root->child[0];
+    citrus_node curr = root->child[0];
     int ckey = curr->key ;
     while (curr != NULL && ckey != key){
         if (ckey > key)
@@ -77,7 +77,7 @@ int contains(node root, int key ){
     return 1;
 }
 
-bool validate(node prev,int tag ,node curr, int direction){
+bool validate(citrus_node prev,int tag ,citrus_node curr, int direction){
 	bool result;     
 	if (curr==NULL){
         result = (!(prev->marked) &&  (prev->child[direction]==curr) && (prev->tag[direction]==tag));
@@ -88,11 +88,11 @@ bool validate(node prev,int tag ,node curr, int direction){
 	return result;
 }
 
-bool insert(node root, int key, int value){
+bool citrus_insert(citrus_node root, int key, int value){
     while(true){    
 		urcu_read_lock();
-        node prev = root;
-        node curr = root->child[0];
+        citrus_node prev = root;
+        citrus_node curr = root->child[0];
         int direction = 0;
         int ckey = curr->key;
         int tag; 
@@ -114,7 +114,7 @@ bool insert(node root, int key, int value){
         if (curr!=NULL) return false;
         pthread_mutex_lock(&(prev->lock));
         if( validate(prev,tag,curr,direction) ){
-            node new = newNode(key); 
+            citrus_node new = newNode(key); 
 			prev->child[direction]=new;
 
             pthread_mutex_unlock(&(prev->lock));
@@ -125,11 +125,11 @@ bool insert(node root, int key, int value){
 }
 
 
-bool delete(node root, int key){
+bool citrus_delete(citrus_node root, int key){
     while(true){
 		urcu_read_lock();    
-        node prev = root;
-        node curr = root->child[0];
+        citrus_node prev = root;
+        citrus_node curr = root->child[0];
         int direction = 0;
         int ckey = curr->key;
         while (curr != NULL && ckey != key){
@@ -177,10 +177,10 @@ bool delete(node root, int key){
             pthread_mutex_unlock(&(curr->lock));
             return true;
         }
-		node prevSucc = curr;
-        node succ = curr->child[1]; 
+		citrus_node prevSucc = curr;
+        citrus_node succ = curr->child[1]; 
         
-            node next = succ->child[0];
+            citrus_node next = succ->child[0];
             while ( next!= NULL){
                 prevSucc = succ;
                 succ = next;
@@ -194,7 +194,7 @@ bool delete(node root, int key){
         pthread_mutex_lock(&(succ->lock));
         if (validate(prevSucc,0,succ, succDirection) && validate(succ,succ->tag[0],NULL, 0)){
             curr->marked=true;
-            node new = newNode(succ->key);
+            citrus_node new = newNode(succ->key);
             new->child[0]=curr->child[0];
             new->child[1]=curr->child[1];
             pthread_mutex_lock(&(new->lock)); 
