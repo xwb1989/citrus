@@ -24,52 +24,58 @@
 
 #if !defined(EXTERNAL_RCU)
 
+
 typedef struct rcu_node_t {
-    volatile long time; 
+    volatile unsigned long time; 
     char p[184];
 } rcu_node;
 
-void initURCU(int num_threads);
-void urcu_read_lock();
-void urcu_read_unlock();
-void urcu_synchronize(); 
-void urcu_register(int id);
-void urcu_unregister();
+
+
+    void initURCU(int num_threads);
+    void urcu_read_lock();
+    void urcu_read_unlock();
+    void urcu_synchronize(); 
+    void urcu_register(int id);
+    void urcu_unregister();
 
 #else
 
 #include <urcu.h>
 
-static inline void initURCU(int num_threads)
-{
-    rcu_init();
-}
+extern "C" {
 
-static inline void urcu_register(int id)
-{
-    rcu_register_thread();
-}
+    static inline void initURCU(int num_threads)
+    {
+        rcu_init();
+    }
 
-static inline void urcu_unregister()
-{
-    rcu_unregister_thread();
-}
+    static inline void urcu_register(int id)
+    {
+        rcu_register_thread();
+    }
 
-static inline void urcu_read_lock()
-{
-    rcu_read_lock();
-}
+    static inline void urcu_unregister()
+    {
+        rcu_unregister_thread();
+    }
 
-static inline void urcu_read_unlock()
-{
-    rcu_read_unlock();
-}
+    static inline void urcu_read_lock()
+    {
+        rcu_read_lock();
+    }
 
-static inline void urcu_synchronize()
-{
-    synchronize_rcu();
-}
+    static inline void urcu_read_unlock()
+    {
+        rcu_read_unlock();
+    }
 
+    static inline void urcu_synchronize()
+    {
+        synchronize_rcu();
+    }
+
+}
 #endif  /* EXTERNAL RCU */ 
 
 #endif

@@ -28,9 +28,9 @@
 
 typedef struct node_t* citrus_node;
 
-citrus_node citrus_init();
-int citrus_contains(citrus_node root, int key);
-bool citrus_insert(citrus_node root, int key, int value);
-bool citrus_delete(citrus_node root, int key);
+    citrus_node citrus_init();
+    int citrus_contains(citrus_node root, int key);
+    bool citrus_insert(citrus_node root, int key, int value);
+    bool citrus_delete(citrus_node root, int key);
 
 #endif

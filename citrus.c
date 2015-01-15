@@ -53,9 +53,9 @@ citrus_node newNode(int key){
     return new_node;
 }
 
-citrus_node citrus_init(){
+citrus_node citrus_init() {
     citrus_node root = newNode(infinity);
-	root->child[0]=newNode(infinity);
+	root->child[0] = newNode(infinity);
     return root;
 }
 
