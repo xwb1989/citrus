@@ -34,6 +34,6 @@ typedef struct node_t* citrus_node;
     bool citrus_insert(citrus_node root, long key, void* value);
     bool citrus_delete(citrus_node root, long key);
 
-    bool citrus_find(citrus_node root, long key);
+    bool citrus_find(citrus_node root, long key, void** val_ptr);
 
 #endif

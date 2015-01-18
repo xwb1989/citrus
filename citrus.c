@@ -78,6 +78,25 @@ bool citrus_contains(citrus_node root, long key ){
     return 1;
 }
 
+bool citrus_find(citrus_node root, long key, void** val_ptr) {
+    urcu_read_lock();
+    citrus_node curr = root->child[0];
+    long ckey = curr->key;
+    while (curr != NULL && ckey != key) {
+        if (ckey > key)
+            curr = curr->child[0];
+        if (ckey < key)
+            curr = curr->child[1];
+        if (curr != NULL)
+            ckey = curr->key;
+    }
+    urcu_read_unlock();
+    if (curr == NULL) return false;
+    *val_ptr = curr->value;
+//    printf("citrus find key %ld, val %ld\n", key, (long)*val_ptr);
+    return true;
+}
+
 bool validate(citrus_node prev,int tag ,citrus_node curr, int direction){
 	bool result;     
 	if (curr==NULL){
@@ -116,6 +135,11 @@ bool citrus_insert(citrus_node root, long key, void* value){
         pthread_mutex_lock(&(prev->lock));
         if( validate(prev,tag,curr,direction) ){
             citrus_node new_node = newNode(key); 
+            /*
+             * This line add value to the tree
+             */
+            new_node->value = value;
+
 			prev->child[direction]=new_node;
 
             pthread_mutex_unlock(&(prev->lock));

@@ -16,18 +16,28 @@
  * =====================================================================================
  */
 #include <stdlib.h>
+#include <stdio.h>
 #include <cassert>
 #include "citrus.h"
 #include "urcu.h"
 
 int main(int argc, char** args) {
     citrus_node root = citrus_init();
-    initURCU(4);
+    initURCU(1);
     urcu_register(0);
-    assert(citrus_insert(root, 1,(void*)11));
-    assert(citrus_insert(root, 2,(void*)12));
+    long val1 = 11;
+    long val2 = 12;
+    assert(citrus_insert(root, 1, (void*) val1));
+    assert(citrus_insert(root, 2, (void*) val2));
 
     assert(citrus_contains(root,1) == 1);
-//    assert(citrus_contains(root,3) == 0); 
+
+    void** val_ptr = (void**) malloc(sizeof(void*));
+    assert(citrus_find(root, 1, val_ptr));
+
+    printf("val: %ld\n", (long)(*val_ptr));
+    assert((long)(*val_ptr) == 11);
+
+    free(val_ptr);
     return 0;
 }
