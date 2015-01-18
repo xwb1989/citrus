@@ -24,13 +24,16 @@
  */
 
 
-#define infinity 2147483647 
+//this is replaced by LONG_MAX
+//#define infinity 2147483647
 
 typedef struct node_t* citrus_node;
 
     citrus_node citrus_init();
-    int citrus_contains(citrus_node root, int key);
-    bool citrus_insert(citrus_node root, int key, int value);
-    bool citrus_delete(citrus_node root, int key);
+    bool citrus_contains(citrus_node root, long key);
+    bool citrus_insert(citrus_node root, long key, void* value);
+    bool citrus_delete(citrus_node root, long key);
+
+    bool citrus_find(citrus_node root, long key);
 
 #endif

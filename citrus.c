@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <limits.h>
 #include "urcu.h"
 #include "citrus.h" 
 
@@ -26,16 +27,16 @@
  */
 
 struct node_t {
-    int key;
+    long key;
     struct node_t* child[2];
 	pthread_mutex_t lock;
 	bool marked;
     int tag[2];
-	int value; 
+	void* value; 
 };
 
 
-citrus_node newNode(int key){
+citrus_node newNode(long key){
     citrus_node new_node = (citrus_node) malloc(sizeof(struct node_t));
 	if( new_node==NULL){
 		printf("out of memory\n");
@@ -54,16 +55,16 @@ citrus_node newNode(int key){
 }
 
 citrus_node citrus_init() {
-    citrus_node root = newNode(infinity);
-	root->child[0] = newNode(infinity);
+    citrus_node root = newNode(LONG_MAX);
+	root->child[0] = newNode(LONG_MAX);
     return root;
 }
 
 
-int citrus_contains(citrus_node root, int key ){
+bool citrus_contains(citrus_node root, long key ){
 	urcu_read_lock();
     citrus_node curr = root->child[0];
-    int ckey = curr->key ;
+    long ckey = curr->key ;
     while (curr != NULL && ckey != key){
         if (ckey > key)
             curr = curr->child[0];
@@ -88,13 +89,13 @@ bool validate(citrus_node prev,int tag ,citrus_node curr, int direction){
 	return result;
 }
 
-bool citrus_insert(citrus_node root, int key, int value){
+bool citrus_insert(citrus_node root, long key, void* value){
     while(true){    
 		urcu_read_lock();
         citrus_node prev = root;
         citrus_node curr = root->child[0];
         int direction = 0;
-        int ckey = curr->key;
+        long ckey = curr->key;
         int tag; 
         while (curr != NULL && ckey != key){
             prev = curr;
@@ -125,13 +126,13 @@ bool citrus_insert(citrus_node root, int key, int value){
 }
 
 
-bool citrus_delete(citrus_node root, int key){
+bool citrus_delete(citrus_node root, long key){
     while(true){
 		urcu_read_lock();    
         citrus_node prev = root;
         citrus_node curr = root->child[0];
         int direction = 0;
-        int ckey = curr->key;
+        long ckey = curr->key;
         while (curr != NULL && ckey != key){
             prev = curr;
             if (ckey > key){

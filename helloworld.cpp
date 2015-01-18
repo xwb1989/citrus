@@ -24,8 +24,8 @@ int main(int argc, char** args) {
     citrus_node root = citrus_init();
     initURCU(4);
     urcu_register(0);
-    assert(citrus_insert(root, 1,11));
-    assert(citrus_insert(root, 2,12));
+    assert(citrus_insert(root, 1,(void*)11));
+    assert(citrus_insert(root, 2,(void*)12));
 
     assert(citrus_contains(root,1) == 1);
 //    assert(citrus_contains(root,3) == 0); 
