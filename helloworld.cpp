@@ -32,12 +32,11 @@ int main(int argc, char** args) {
 
     assert(citrus_contains(root,1) == 1);
 
-    void** val_ptr = (void**) malloc(sizeof(void*));
-    assert(citrus_find(root, 1, val_ptr));
+    void* val;
+    assert(citrus_find(root, 1, &val));
 
-    printf("val: %ld\n", (long)(*val_ptr));
-    assert((long)(*val_ptr) == 11);
+    printf("val: %ld\n", (long)val);
+    assert((long)val == 11);
 
-    free(val_ptr);
     return 0;
 }
