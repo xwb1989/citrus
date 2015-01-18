@@ -1,30 +1,20 @@
-CC=g++
-CPPC=g++
-LD=g++
-LIB = -lurcu
-RM=rm
-CFLAGS=-Wall -c -DEXTERNAL_RCU
-CPPFLAGS=$(CFLAGS)
-LDFLAGS= 
-CSRC=citrus.c 
-CPPSRC=helloworld.cpp
-PROG=hello
-OBJS= $(CSRC:.c=.o)  $(CPPSRC:.cpp=.o) 
+PROG:=hello
 
 .PHONY: all
-all: $(PROG)
+all: 
+	g++ -c -Wall -DEXTERNAL_RCU citrus.c -o citrus.o
+	g++ -c -Wall -DEXTERNAL_RCU helloworld.cpp -o helloworld.o
+	g++ -o $(PROG) helloworld.o citrus.o -lurcu
 
+.PHONY: all
+new:
+	g++ -c -Wall citrus.c -o citrus.o
+	g++ -c -Wall helloworld.cpp -o helloworld.o
+	g++ -c -Wall new_urcu.c -o new_urcu.o
+	g++ -o $(PROG) helloworld.o citrus.o new_urcu.o
 
-$(PROG): $(OBJS)
-	$(LD) $(LDFLAGS) $^ -o $@ $(LIB)
-
-%.o: %.c 
-	$(CC) $(CFLAGS) $< -o $@
-
-%.o: %.cpp 
-	$(CPPC) $(CPPFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
-	$(RM) $(OBJS) $(PROG)
+	$(RM) *.o $(PROG)
 	
