@@ -74,8 +74,8 @@ bool citrus_contains(citrus_node root, long key ){
                 ckey = curr->key ;
     }
 	urcu_read_unlock();
-    if (curr == NULL) return -1;
-    return 1;
+    if (curr == NULL) return false;
+    return true;
 }
 
 bool citrus_find(citrus_node root, long key, void** val_ptr) {
