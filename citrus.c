@@ -48,6 +48,7 @@ citrus_node newNode(long key){
     new_node->child[1]=NULL;
     new_node->tag[0]=0;
     new_node->tag[1]=0;
+    new_node->value = NULL;
     if (pthread_mutex_init(&(new_node->lock), NULL) != 0){
         printf("\n mutex init failed\n");
     }
