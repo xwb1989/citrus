@@ -94,7 +94,6 @@ bool citrus_find(citrus_node root, long key, void** val_ptr) {
     urcu_read_unlock();
     if (curr == NULL) return false;
     *val_ptr = curr->value;
-//    printf("citrus find key %ld, val %ld\n", key, (long)*val_ptr);
     return true;
 }
 
